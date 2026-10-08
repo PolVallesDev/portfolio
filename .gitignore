@@ -24,3 +24,6 @@ yarn-error.log*
 # AI / Agents
 .agents/
 .agent/
+
+index_cyberpunk_v1.html
+index_standalone.html
