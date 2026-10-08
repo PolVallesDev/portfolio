@@ -149,28 +149,30 @@ export const ProjectsOverlay: React.FC<ProjectsOverlayProps> = ({ opacity }) => 
                 </div>
               )}
 
-              {/* Botón directo de visita */}
-              <div className="pt-2">
-                <a
-                  href={activeProject.webUrl || activeProject.demoUrl || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-cinnabar hover:bg-cinnabar-dark text-white font-serif font-semibold text-xs tracking-wider rounded-lg transition-colors shadow-lg active:scale-[0.99]"
-                >
-                  <span>Ver Proyecto</span>
-                  <span className="text-xs">↗</span>
-                </a>
-              </div>
-              <div className="pt-1">
-                <a
-                  href={activeProject.githubUrl || activeProject.demoUrl || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-cinnabar hover:bg-cinnabar-dark text-white font-serif font-semibold text-xs tracking-wider rounded-lg transition-colors shadow-lg active:scale-[0.99]"
-                >
-                  <span>Ver Proyecto en GitHub</span>
-                  <span className="text-xs">↗</span>
-                </a>
+              {/* Botones de acción directa */}
+              <div className="pt-2 flex flex-col gap-1.5">
+                {activeProject.webUrl && (
+                  <a
+                    href={activeProject.webUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-cinnabar hover:bg-cinnabar-dark text-white font-serif font-semibold text-xs tracking-wider rounded-lg transition-colors shadow-lg active:scale-[0.99]"
+                  >
+                    <span>Visitar Web Oficial</span>
+                    <span className="text-xs">↗</span>
+                  </a>
+                )}
+                {activeProject.githubUrl && (
+                  <a
+                    href={activeProject.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 w-full py-2 px-4 bg-white/5 hover:bg-white/10 border border-white/10 text-washi font-serif font-medium text-xs tracking-wider rounded-lg transition-colors active:scale-[0.99]"
+                  >
+                    <span>Código en GitHub</span>
+                    <span className="text-xs text-washi-subtle">↗</span>
+                  </a>
+                )}
               </div>
             </div>
           </div>

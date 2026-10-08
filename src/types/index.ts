@@ -13,6 +13,7 @@ export interface Project {
   tags?: string[];
   githubUrl?: string;
   demoUrl?: string;
+  webUrl?: string;
   imageUrl?: string;
 }
 
