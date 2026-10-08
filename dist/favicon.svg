@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#070709" rx="8" />
-  <rect x="7" y="7" width="50" height="50" rx="3" fill="none" stroke="#bd1e2d" stroke-width="4.5" />
-  <text x="32" y="38" font-family="'Shippori Mincho', 'Noto Serif JP', serif" font-weight="bold" font-size="34" fill="#bd1e2d" text-anchor="middle" dominant-baseline="central">波</text>
-</svg>
