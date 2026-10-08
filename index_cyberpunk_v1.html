@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pol // DAM Developer & Tech Ninja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Space Grotesk', 'sans-serif'],
+            display: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cyber: {
+              dark: '#08090D',
+              card: '#0f111a',
+              blue: '#00d2ff',
+              red: '#ff2a5f',
+              purple: '#b026ff',
+              border: '#1f2335'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scanline and glow effects */
+    body {
+      background-color: #08090D;
+      color: #E2E8F0;
+      overflow-x: hidden;
+    }
+    .scanlines {
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+    }
+    .glow-cyan {
+      box-shadow: 0 0 35px -5px rgba(0, 210, 255, 0.4);
+    }
+    .glow-red {
+      box-shadow: 0 0 35px -5px rgba(255, 42, 95, 0.5);
+    }
+    .text-glow-blue {
+      text-shadow: 0 0 20px rgba(0, 210, 255, 0.7);
+    }
+    .text-glow-red {
+      text-shadow: 0 0 20px rgba(255, 42, 95, 0.8);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08090D;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ff2a5f;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="bg-cyber-dark text-slate-100 selection:bg-cyber-red selection:text-white font-sans">
+
+  <!-- Scanlines overlay for anime/cyberpunk aesthetic -->
+  <div class="fixed inset-0 scanlines z-40 opacity-40"></div>
+
+  <!-- Loading Bar Indicator (Top) -->
+  <div id="loader-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-red z-50 transition-all duration-200" style="width: 0%"></div>
+
+  <!-- Fixed Navigation Bar -->
+  <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 backdrop-blur-md bg-cyber-dark/80 border-b border-cyber-border/60">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-cyber-blue animate-pulse shadow-[0_0_10px_#00d2ff]"></span>
+        <span class="font-mono text-sm tracking-wider font-bold text-white">POL.DEV <span class="text-cyber-blue">[ 開発者 ]</span></span>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 font-mono text-xs uppercase tracking-widest text-slate-400">
+        <a href="#hero" class="hover:text-cyber-blue transition-colors">01. Inicio</a>
+        <a href="#proyectos" class="hover:text-cyber-blue transition-colors">02. Proyectos</a>
+        <a href="#stack" class="hover:text-cyber-blue transition-colors">03. Stack DAM</a>
+        <a href="#contacto" class="hover:text-cyber-blue transition-colors">04. Contacto</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:inline-block font-mono text-xs px-2.5 py-1 rounded bg-cyber-card border border-cyber-border text-emerald-400">
+          ● DAM 2º AÑO // DISPONIBLE
+        </span>
+        <a href="#contacto" class="px-3.5 py-1.5 text-xs font-mono font-bold tracking-wider rounded bg-gradient-to-r from-cyber-red to-cyber-purple text-white hover:opacity-90 transition shadow-[0_0_15px_rgba(255,42,95,0.4)]">
+          CONTACTAR
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- HERO SCROLL CONTAINER (TÉCNICA APPLE CANVAS SCROLL)       -->
+  <!-- ======================================================== -->
+  <div id="scroll-track" class="relative w-full" style="height: 500vh;">
+
+    <!-- Sticky Fullscreen Viewport -->
+    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden flex items-center justify-center">
+
+      <!-- The Canvas Rendering the 240 Frames -->
+      <canvas id="hero-canvas" class="absolute inset-0 w-full h-full object-cover filter brightness-[0.95] contrast-[1.05]"></canvas>
+
+      <!-- Soft gradient overlays to blend canvas smoothly -->
+      <div class="absolute inset-0 bg-gradient-to-t from-cyber-dark via-transparent to-cyber-dark/60 pointer-events-none"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-cyber-dark/40 via-transparent to-cyber-dark/40 pointer-events-none"></div>
+
+      <!-- HUD Top Right Coordinates & Status -->
+      <div class="absolute top-20 right-6 font-mono text-[10px] text-slate-500 hidden md:flex flex-col items-end gap-1 pointer-events-none z-30">
+        <div class="text-cyber-blue flex items-center gap-1.5">
+          <span>FPS: 60</span> | <span id="hud-frame">FOTOGRAMA: 001/240</span>
+        </div>
+        <div id="hud-phase" class="text-slate-400 uppercase tracking-widest">ESTADO: INICIALIZANDO // BLUE EYES</div>
+      </div>
+
+      <!-- Scroll Progress Bar on the Left -->
+      <div class="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-3 font-mono text-[10px] text-slate-500 z-30 pointer-events-none">
+        <span class="rotate-[-90deg] uppercase tracking-widest text-cyber-blue">SCROLL</span>
+        <div class="w-1 h-36 bg-cyber-card rounded-full overflow-hidden border border-cyber-border">
+          <div id="vertical-scroll-bar" class="w-full bg-gradient-to-b from-cyber-blue via-cyber-purple to-cyber-red transition-all duration-75" style="height: 0%;"></div>
+        </div>
+        <span id="scroll-percentage" class="text-slate-400">0%</span>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- OVERLAY 1: INTRODUCCIÓN (SCROLL 0% - 25%)              -->
+      <!-- ====================================================== -->
+      <div id="overlay-1" class="absolute inset-0 flex flex-col items-center justify-end pb-28 md:pb-24 px-6 text-center z-20 transition-opacity duration-300 pointer-events-none">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-card/80 border border-cyber-blue/30 backdrop-blur-md mb-4">
+          <span class="w-2 h-2 rounded-full bg-cyber-blue animate-ping"></span>
+          <span class="font-mono text-xs text-cyber-blue tracking-widest font-semibold uppercase">Desarrollador Multiplataforma</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl md:text-7xl font-black font-display tracking-tight text-white max-w-4xl drop-shadow-2xl">
+          POL <span class="bg-gradient-to-r from-cyber-blue via-purple-300 to-cyber-red bg-clip-text text-transparent">VALLÉS</span>
+        </h1>
+
+        <p class="mt-4 font-mono text-sm sm:text-base text-slate-300 max-w-xl">
+          Estudiante de DAM especializado en desarrollo multiplataforma, lógica limpia y experiencias interactivas modernas.
+        </p>
+
+        <!-- Animated Scroll Mouse Indicator -->
+        <div class="mt-8 flex flex-col items-center gap-2 text-slate-400 font-mono text-xs">
+          <div class="w-5 h-9 rounded-full border-2 border-cyber-blue/60 flex items-start justify-center p-1">
+            <div class="w-1.5 h-2.5 rounded-full bg-cyber-blue animate-bounce"></div>
+          </div>
+          <span class="tracking-widest uppercase text-[10px] text-cyber-blue">Desliza para inicializar ↓</span>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- OVERLAY 2: TECH STACK / DAM SKILLS (SCROLL 25% - 55%) -->
+      <!-- Personaje está en la IZQUIERDA mirando a la DERECHA    -->
+      <!-- El contenido se muestra en la DERECHA libre            -->
+      <!-- ====================================================== -->
+      <div id="overlay-2" class="absolute inset-0 flex items-center justify-end px-6 md:px-16 lg:px-24 z-20 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="w-full max-w-lg bg-cyber-card/85 backdrop-blur-xl border border-cyber-blue/30 p-6 sm:p-8 rounded-2xl shadow-2xl glow-cyan pointer-events-auto">
+          <div class="flex items-center justify-between mb-4 border-b border-cyber-border pb-3">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs text-cyber-blue font-bold tracking-widest">02 // TECH STACK [ 術 ]</span>
+            </div>
+            <span class="font-mono text-[10px] text-slate-400">STATUS: FOCUSED</span>
+          </div>
+
+          <h3 class="text-2xl font-display font-bold text-white mb-2">Habilidades Multiplataforma</h3>
+          <p class="text-xs text-slate-300 font-mono mb-5">Construcción de aplicaciones sólidas con el ecosistema de DAM.</p>
+
+          <div class="space-y-3.5">
+            <div>
+              <div class="flex justify-between font-mono text-xs mb-1">
+                <span class="text-slate-200">Java / Arquitectura POO</span>
+                <span class="text-cyber-blue font-bold">85%</span>
+              </div>
+              <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-cyan-500 to-cyber-blue rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between font-mono text-xs mb-1">
+                <span class="text-slate-200">Android SDK & Kotlin</span>
+                <span class="text-cyber-blue font-bold">80%</span>
+              </div>
+              <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-cyan-500 to-cyber-blue rounded-full" style="width: 80%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between font-mono text-xs mb-1">
+                <span class="text-slate-200">Bases de Datos (SQL / MySQL / Room)</span>
+                <span class="text-cyber-blue font-bold">85%</span>
+              </div>
+              <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-cyan-500 to-cyber-blue rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between font-mono text-xs mb-1">
+                <span class="text-slate-200">Frontend Moderno (React, Tailwind, GSAP)</span>
+                <span class="text-cyber-blue font-bold">75%</span>
+              </div>
+              <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-cyan-500 to-cyber-blue rounded-full" style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-2 pt-4 border-t border-cyber-border/60">
+            <span class="px-2.5 py-1 text-[11px] font-mono bg-cyber-dark/80 rounded border border-cyber-border text-slate-300">Git / GitHub</span>
+            <span class="px-2.5 py-1 text-[11px] font-mono bg-cyber-dark/80 rounded border border-cyber-border text-slate-300">APIs REST</span>
+            <span class="px-2.5 py-1 text-[11px] font-mono bg-cyber-dark/80 rounded border border-cyber-border text-slate-300">IntelliJ & Android Studio</span>
+            <span class="px-2.5 py-1 text-[11px] font-mono bg-cyber-dark/80 rounded border border-cyber-border text-slate-300">Scrum / Gitflow</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- OVERLAY 3: PROYECTOS / SHARINGAN (SCROLL 65% - 100%)    -->
+      <!-- Personaje está en la DERECHA mirando a la IZQUIERDA     -->
+      <!-- El contenido se muestra en la IZQUIERDA libre          -->
+      <!-- ====================================================== -->
+      <div id="overlay-3" class="absolute inset-0 flex items-center justify-start px-6 md:px-16 lg:px-24 z-20 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="w-full max-w-lg bg-cyber-card/90 backdrop-blur-xl border border-cyber-red/40 p-6 sm:p-8 rounded-2xl shadow-2xl glow-red pointer-events-auto">
+          <div class="flex items-center justify-between mb-4 border-b border-cyber-border pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyber-red animate-ping"></span>
+              <span class="font-mono text-xs text-cyber-red font-bold tracking-widest">03 // MISIONES & PROYECTOS [ 任務 ]</span>
+            </div>
+            <span class="font-mono text-[10px] text-cyber-red font-bold uppercase">SHARINGAN ACTIVE</span>
+          </div>
+
+          <h3 class="text-2xl font-display font-bold text-white mb-2">Visión de Código en Acción</h3>
+          <p class="text-xs text-slate-300 font-mono mb-5">Proyectos donde aplico arquitectura y desarrollo práctico.</p>
+
+          <div class="space-y-3">
+            <!-- Proyecto 1 -->
+            <div class="p-3.5 rounded-xl bg-cyber-dark/70 border border-cyber-border hover:border-cyber-red/50 transition group cursor-pointer">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-sm text-white group-hover:text-cyber-red transition">App Multiplataforma Android</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Gestión de datos con Room DB, Jetpack Compose y MVVM.</p>
+                </div>
+                <span class="text-xs font-mono text-cyber-red">→</span>
+              </div>
+              <div class="flex gap-2 mt-2 font-mono text-[10px] text-slate-400">
+                <span class="text-cyber-red">#Kotlin</span>
+                <span>#Android</span>
+                <span>#Room</span>
+              </div>
+            </div>
+
+            <!-- Proyecto 2 -->
+            <div class="p-3.5 rounded-xl bg-cyber-dark/70 border border-cyber-border hover:border-cyber-red/50 transition group cursor-pointer">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-sm text-white group-hover:text-cyber-red transition">Backend REST API & Autenticación</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">API modular con Java, Spring Boot y persistencia MySQL.</p>
+                </div>
+                <span class="text-xs font-mono text-cyber-red">→</span>
+              </div>
+              <div class="flex gap-2 mt-2 font-mono text-[10px] text-slate-400">
+                <span class="text-cyber-red">#Java</span>
+                <span>#Spring</span>
+                <span>#MySQL</span>
+              </div>
+            </div>
+
+            <!-- Proyecto 3 -->
+            <div class="p-3.5 rounded-xl bg-cyber-dark/70 border border-cyber-border hover:border-cyber-red/50 transition group cursor-pointer">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h4 class="font-bold text-sm text-white group-hover:text-cyber-red transition">Interactive Scrollytelling Portfolio</h4>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Web interactiva con 240 fotogramas canvas a 60 FPS.</p>
+                </div>
+                <span class="text-xs font-mono text-cyber-red">→</span>
+              </div>
+              <div class="flex gap-2 mt-2 font-mono text-[10px] text-slate-400">
+                <span class="text-cyber-red">#Canvas</span>
+                <span>#JavaScript</span>
+                <span>#Tailwind</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 pt-3 border-t border-cyber-border/60 flex justify-between items-center font-mono text-xs">
+            <span class="text-slate-400">Sigue deslizando para más detalles</span>
+            <span class="text-cyber-red">↓</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- SECCIÓN FINAL: SOBRE MÍ & CONTACTO                        -->
+  <!-- ======================================================== -->
+  <section id="contacto" class="relative z-30 py-24 px-6 bg-cyber-dark border-t border-cyber-border">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="font-mono text-xs text-cyber-red uppercase tracking-widest">04 // FORMULARIO DE ACCESO</span>
+        <h2 class="text-3xl sm:text-5xl font-black font-display text-white mt-2">¿HACEMOS EQUIPO?</h2>
+        <p class="mt-3 text-slate-400 font-mono text-sm max-w-lg mx-auto">
+          Busco empresa para prácticas de DAM o proyectos donde aportar energía, código limpio y ganas de aprender.
+        </p>
+      </div>
+
+      <!-- Tarjeta tipo Terminal de contacto -->
+      <div class="bg-cyber-card border border-cyber-border rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-red"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h3 class="text-xl font-bold font-display text-white mb-2">Información de Contacto</h3>
+            <p class="text-sm text-slate-400 mb-6">
+              Disponible para prácticas curriculares / extracurriculares o incorporación junior.
+            </p>
+
+            <div class="space-y-4 font-mono text-sm">
+              <div class="flex items-center gap-3 text-slate-300">
+                <span class="text-cyber-blue">✉</span>
+                <span>pol.dev.contact@email.com</span>
+              </div>
+              <div class="flex items-center gap-3 text-slate-300">
+                <span class="text-cyber-purple">📍</span>
+                <span>España // Disponible Remoto / Híbrido</span>
+              </div>
+              <div class="flex items-center gap-3 text-slate-300">
+                <span class="text-cyber-red">⚡</span>
+                <span>Grado Superior en DAM (2º Curso)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 font-mono text-xs">
+            <a href="https://github.com" target="_blank" class="flex items-center justify-between p-3.5 rounded-xl bg-cyber-dark border border-cyber-border hover:border-cyber-blue transition group">
+              <span class="text-slate-200 group-hover:text-cyber-blue">github.com/pol-developer</span>
+              <span>↗</span>
+            </a>
+            <a href="https://linkedin.com" target="_blank" class="flex items-center justify-between p-3.5 rounded-xl bg-cyber-dark border border-cyber-border hover:border-cyber-purple transition group">
+              <span class="text-slate-200 group-hover:text-cyber-purple">linkedin.com/in/pol-developer</span>
+              <span>↗</span>
+            </a>
+            <button class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyber-red to-cyber-purple text-white font-bold tracking-wider hover:opacity-90 transition shadow-[0_0_20px_rgba(255,42,95,0.4)]">
+              DESCARGAR CV [ PDF ]
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-16 text-center font-mono text-xs text-slate-500">
+        <p>© 2026 Pol // DAM Developer Portfolio. Diseñado con Canvas Scrollytelling.</p>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- CANVAS SCROLL ENGINE (JAVASCRIPT NATIVO ULTRA-FLUIDO)     -->
+  <!-- ======================================================== -->
+  <script>
+    const TOTAL_FRAMES = 240;
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+    const scrollTrack = document.getElementById('scroll-track');
+    const progressBar = document.getElementById('loader-progress');
+    const verticalScrollBar = document.getElementById('vertical-scroll-bar');
+    const scrollPercentageEl = document.getElementById('scroll-percentage');
+    const hudFrame = document.getElementById('hud-frame');
+    const hudPhase = document.getElementById('hud-phase');
+
+    const overlay1 = document.getElementById('overlay-1');
+    const overlay2 = document.getElementById('overlay-2');
+    const overlay3 = document.getElementById('overlay-3');
+
+    // Array to store preloaded Image objects
+    const frames = [];
+    let loadedCount = 0;
+    let currentFrameIndex = 0;
+    let targetFrameIndex = 0;
+
+    // Set internal canvas resolution to 1280x720 (native video resolution)
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      renderCurrentFrame();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // Frame file path generator
+    function getFramePath(index) {
+      const padded = String(index).padStart(4, '0');
+      return `assets/frames/frame_${padded}.webp`;
+    }
+
+    // Draw frame keeping aspect ratio (object-fit: cover)
+    function drawImageCover(img) {
+      if (!img || !img.complete) return;
+      
+      const cWidth = canvas.width;
+      const cHeight = canvas.height;
+      const iWidth = img.naturalWidth || 1280;
+      const iHeight = img.naturalHeight || 720;
+
+      const scale = Math.max(cWidth / iWidth, cHeight / iHeight);
+      const x = (cWidth - iWidth * scale) / 2;
+      const y = (cHeight - iHeight * scale) / 2;
+
+      ctx.clearRect(0, 0, cWidth, cHeight);
+      ctx.drawImage(img, x, y, iWidth * scale, iHeight * scale);
+    }
+
+    function renderCurrentFrame() {
+      const frameImg = frames[Math.round(currentFrameIndex)];
+      if (frameImg && frameImg.complete) {
+        drawImageCover(frameImg);
+      }
+    }
+
+    // Preload frames progressively
+    function preloadFrames() {
+      for (let i = 1; i <= TOTAL_FRAMES; i++) {
+        const img = new Image();
+        img.src = getFramePath(i);
+        img.onload = () => {
+          loadedCount++;
+          const percent = (loadedCount / TOTAL_FRAMES) * 100;
+          progressBar.style.width = `${percent}%`;
+          if (loadedCount === 1) {
+            // Immediately render frame 1 on first load
+            resizeCanvas();
+            renderCurrentFrame();
+          }
+          if (loadedCount === TOTAL_FRAMES) {
+            setTimeout(() => {
+              progressBar.style.opacity = '0';
+            }, 300);
+          }
+        };
+        frames.push(img);
+      }
+    }
+
+    // Scroll calculations
+    function onScroll() {
+      const rect = scrollTrack.getBoundingClientRect();
+      const trackHeight = scrollTrack.offsetHeight - window.innerHeight;
+      const scrollTop = -rect.top;
+      
+      let progress = Math.max(0, Math.min(1, scrollTop / trackHeight));
+      
+      targetFrameIndex = Math.floor(progress * (TOTAL_FRAMES - 1));
+      
+      // Update UI Indicators
+      const percentInt = Math.round(progress * 100);
+      verticalScrollBar.style.height = `${percentInt}%`;
+      scrollPercentageEl.textContent = `${percentInt}%`;
+
+      // Update Phase HUD and Overlay states
+      updateOverlays(progress);
+    }
+
+    function updateOverlays(progress) {
+      // Phase 1: 0% to 22% -> Intro (Center, Blue Eyes)
+      if (progress < 0.22) {
+        overlay1.style.opacity = Math.max(0, 1 - (progress / 0.18));
+        overlay1.style.pointerEvents = progress < 0.15 ? 'auto' : 'none';
+        overlay2.style.opacity = 0;
+        overlay2.style.pointerEvents = 'none';
+        overlay3.style.opacity = 0;
+        overlay3.style.pointerEvents = 'none';
+        hudPhase.textContent = 'ESTADO: 01 // BLUE EYES REPOSO';
+        hudPhase.className = 'text-cyber-blue uppercase tracking-widest';
+      }
+      // Phase 2: 24% to 58% -> Tech Stack (Personaje a la izquierda, contenido a la derecha)
+      else if (progress >= 0.24 && progress < 0.58) {
+        overlay1.style.opacity = 0;
+        overlay1.style.pointerEvents = 'none';
+        
+        let op2 = 1;
+        if (progress < 0.32) op2 = (progress - 0.24) / 0.08;
+        if (progress > 0.50) op2 = (0.58 - progress) / 0.08;
+        overlay2.style.opacity = Math.max(0, Math.min(1, op2));
+        overlay2.style.pointerEvents = op2 > 0.5 ? 'auto' : 'none';
+        
+        overlay3.style.opacity = 0;
+        overlay3.style.pointerEvents = 'none';
+        hudPhase.textContent = 'ESTADO: 02 // DESPLIEGUE SKILLS DAM';
+        hudPhase.className = 'text-cyber-blue uppercase tracking-widest';
+      }
+      // Phase 3: 58% to 66% -> El teletransporte y sello ninja
+      else if (progress >= 0.58 && progress < 0.66) {
+        overlay1.style.opacity = 0;
+        overlay2.style.opacity = 0;
+        overlay3.style.opacity = 0;
+        hudPhase.textContent = 'ESTADO: // JUTSU SHUNSHIN TELEPORT';
+        hudPhase.className = 'text-cyber-purple uppercase tracking-widest';
+      }
+      // Phase 4: 68% to 100% -> Proyectos (Personaje a la derecha con Sharingan, contenido a la izquierda)
+      else if (progress >= 0.68) {
+        overlay1.style.opacity = 0;
+        overlay2.style.opacity = 0;
+        
+        let op3 = Math.min(1, (progress - 0.68) / 0.08);
+        overlay3.style.opacity = Math.max(0, op3);
+        overlay3.style.pointerEvents = op3 > 0.5 ? 'auto' : 'none';
+        hudPhase.textContent = 'ESTADO: 03 // SHARINGAN & PROYECTOS';
+        hudPhase.className = 'text-cyber-red uppercase tracking-widest';
+      }
+    }
+
+    // Smooth animation loop using linear interpolation (Lerp)
+    function animLoop() {
+      // Lerp smoothing: smoothly catch up to target frame index
+      const diff = targetFrameIndex - currentFrameIndex;
+      if (Math.abs(diff) > 0.01) {
+        currentFrameIndex += diff * 0.18; // smooth easing factor
+        renderCurrentFrame();
+        
+        const frameNum = String(Math.round(currentFrameIndex) + 1).padStart(3, '0');
+        hudFrame.textContent = `FOTOGRAMA: ${frameNum}/240`;
+      }
+      requestAnimationFrame(animLoop);
+    }
+
+    // Initialize
+    window.addEventListener('scroll', onScroll, { passive: true });
+    preloadFrames();
+    resizeCanvas();
+    animLoop();
+  </script>
+</body>
+</html>

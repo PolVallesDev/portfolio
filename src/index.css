@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: #070709;
+    color: #eceae4;
+    font-feature-settings: "palt" 1;
+  }
+
+  body {
+    background-color: #070709;
+    overflow-x: hidden;
+  }
+
+  /* Refined scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #070709;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1f212a;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #bd1e2d;
+  }
+}
+
+/* Vertical Japanese text utility */
+.writing-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
