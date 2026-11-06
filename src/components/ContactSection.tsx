@@ -75,12 +75,13 @@ export const ContactSection: React.FC = () => {
                 <span className="text-washi group-hover:text-white">linkedin.com/in/pol-valles</span>
                 <span className="text-washi-subtle group-hover:text-washi">LinkedIn</span>
               </a>
-              <button
-                type="button"
-                className="w-full py-3.5 bg-cinnabar hover:bg-cinnabar-dark text-white font-serif font-bold tracking-wider transition rounded-sm mt-1 active:scale-[0.99]"
+              <a
+                href="/CV-Pol-Valles-Esteban.pdf"
+                download
+                className="block w-full py-3.5 bg-cinnabar hover:bg-cinnabar-dark text-center text-white font-serif font-bold tracking-wider transition rounded-sm mt-1 active:scale-[0.99]"
               >
                 Descargar Currículum Vitae (PDF)
-              </button>
+              </a>
             </div>
           </div>
         </div>
