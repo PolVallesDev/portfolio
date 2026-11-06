@@ -28,7 +28,7 @@ export const SkillsOverlay: React.FC<SkillsOverlayProps> = ({ opacity }) => {
         </div>
 
         <p className="text-xs text-washi-muted leading-relaxed mb-4">
-          Bases técnicas orientadas a la robustez, buenas prácticas de desarrollo y arquitectura de datos.
+          Combinación de aprendizaje del ciclo y bagaje técnico propio, con un enfoque directo hacia la IA y la resolución rápida de problemas.
         </p>
 
         <div className="space-y-3 text-xs sm:text-sm">

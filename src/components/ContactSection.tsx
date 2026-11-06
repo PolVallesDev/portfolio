@@ -30,7 +30,7 @@ export const ContactSection: React.FC = () => {
             <div>
               <h3 className="font-serif font-bold text-lg text-white mb-2">Pol Vallés</h3>
               <p className="text-xs text-washi-muted leading-relaxed mb-6 font-light">
-                Estudiante de Desarrollo de Aplicaciones Multiplataforma. Comprometido con la calidad del código, la disciplina de trabajo y la resolución metódica de problemas.
+                Estudiante de Desarrollo de Aplicaciones Multiplataforma. Orientado a la resolución eficaz de problemas, la optimización con Inteligencia Artificial y el trabajo de calidad.
               </p>
 
               <ul className="space-y-2.5 text-xs text-washi-muted">
@@ -86,7 +86,7 @@ export const ContactSection: React.FC = () => {
         </div>
 
         <footer className="mt-16 pt-6 border-t border-ink-border text-center text-xs text-washi-subtle flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span>© 2026 Pol Vallés · Portafolio de Software Multiplataforma</span>
+          <span>© 2026 Pol Vallés · Portafolio de Software Multiplataforma &amp; IA</span>
           <span className="font-serif text-[11px] text-washi-muted">技術 · 規律 · 創造性</span>
         </footer>
       </div>

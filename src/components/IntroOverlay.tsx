@@ -17,7 +17,7 @@ export const IntroOverlay: React.FC<IntroOverlayProps> = ({ opacity }) => {
       <div className="inline-flex items-center gap-2 mb-4">
         <span className="h-px w-6 bg-white/20"></span>
         <span className="font-serif text-xs tracking-[0.25em] text-washi-muted uppercase">
-          Desarrollo de Software y IA
+          Desarrollo de Software e Inteligencia Artificial
         </span>
         <span className="h-px w-6 bg-white/20"></span>
       </div>
@@ -27,7 +27,7 @@ export const IntroOverlay: React.FC<IntroOverlayProps> = ({ opacity }) => {
       </h1>
 
       <p className="mt-4 font-sans text-sm sm:text-base text-washi-muted max-w-lg font-normal leading-relaxed">
-        Estudiante de 1º de DAM, enfocado en <a className='font-bold'>desarrollo multiplataforma</a> y <a className='font-bold'>Inteligencia Artificial</a>. Sin adornos innecesarios.
+        Estudiante de 1º de DAM con una base sólida en programación y bases de datos. Apasionado por la tecnología, especializado en la aplicación y dominio de herramientas de <strong className="font-bold">Inteligencia Artificial</strong> para optimizar procesos y crear software eficiente.
       </p>
 
       {/* Subtle scroll cue */}
